@@ -69,14 +69,25 @@ const basicReport = {
 
 export default function PdfViewer() {
   const [data, setData] = useState(basicReport);
+  const [extra, setExtra] = useState(false);
   const [numPages, setNumPages] = useState(null);
+
+  if (extra) {
+    for (var i = 0; i <= 100; i++) {
+      data.accountGroups.push({
+        groupTitle: 'Extra Account',
+        totalAmount: '200.00'
+      });
+    }
+  }
 
   const styles = StyleSheet.create({
     page: {
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: 'white',
-      padding: 24
+      padding: 24,
+      textAlign: 'center'
     },
     row: {
       display: 'flex',
@@ -113,11 +124,10 @@ export default function PdfViewer() {
     },
     p: {
       fontWeight: 'normal',
-      fontSize: 12
+      fontSize: 12,
+      textAlign: 'center'
     }
   });
-
-  function getNewData(event) {}
 
   function onDocumentLoadSuccess({ numPages: nextNumPages }) {
     setNumPages(nextNumPages);
@@ -176,11 +186,12 @@ export default function PdfViewer() {
     );
   };
 
-  const [instance, updateInstance] = usePDF({ document: <MyDoc /> }, [true]);
+  const [instance, updateInstance] = usePDF({ document: <MyDoc /> }, [extra, data]);
+  console.log(instance);
   return (
     <div>
       <div style={{ marginBottom: '30px' }}>
-        <button onClick={getNewData}>Load New Data</button>
+        <button onClick={() => setExtra(!extra)}>Set Extra</button>
         {instance.blob && (
           <>
             <a download="test.pdf" href={instance.url}>
@@ -201,18 +212,7 @@ export default function PdfViewer() {
       </div>
 
       <div>
-        {/* <MyDoc /> */}
-        <Document>
-          <Page style={styles.page} size="A4">
-            <Svg width="190" height="160">
-              <Path
-                d="M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80"
-                stroke="rgb(128, 255, 0)"
-                strokeWidth={3}
-              />
-            </Svg>
-          </Page>
-        </Document>
+        <MyDoc />
       </div>
     </div>
   );
