@@ -35,7 +35,13 @@ const dd = (title, subTitle, accountRows) => ({
       table: {
         headerRows: 1,
         widths: ['*', 'auto'],
-        body: [['Account', 'Total'], ...accountRows]
+        body: [
+          [
+            { text: 'Account', bold: true },
+            { text: 'Total', bold: true }
+          ],
+          ...accountRows
+        ]
       }
     }
   ],
@@ -155,6 +161,18 @@ s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.3
 const openDoc = () => {
   const rows = makeAccountRows(basicReport.accountGroups);
   const context = dd(basicReport.company, basicReport.reportType, rows);
+  pdfMake.createPdf(context).open();
+};
+
+const downloadDoc = () => {
+  const rows = makeAccountRows(basicReport.accountGroups);
+  const context = dd(basicReport.company, basicReport.reportType, rows);
+  pdfMake.createPdf(context).download('basicDoc.pdf');
+};
+
+const printDoc = () => {
+  const rows = makeAccountRows(basicReport.accountGroups);
+  const context = dd(basicReport.company, basicReport.reportType, rows);
   pdfMake.createPdf(context).print();
 };
 const MyDoc = ({ data }) => {
@@ -222,15 +240,13 @@ export default function PDFMake() {
           Open
         </button>
 
-        <>
-          <a download="test.pdf">
-            <button>Download</button>
-          </a>
-          <button type="button" onClick={() => {}}>
-            Print
-          </button>
-          <MyDoc data={basicReport}></MyDoc>
-        </>
+        <button type="button" onClick={printDoc}>
+          Print
+        </button>
+        <button type="button" onClick={downloadDoc}>
+          Download
+        </button>
+        <MyDoc data={basicReport}></MyDoc>
       </div>
     </div>
   );
